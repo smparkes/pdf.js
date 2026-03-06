@@ -3663,6 +3663,7 @@ page 1 / 3`);
       });
       expect(styles[fontName]).toEqual({
         fontFamily: "serif",
+        fontName,
         // `useSystemFonts` has a different value in web environments
         // and in Node.js.
         ascent: isNodeJS ? NaN : 0.683,
