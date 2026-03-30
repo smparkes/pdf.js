@@ -1981,9 +1981,15 @@ const PDFViewerApplication = {
     this.pdfViewer.cleanup();
     this.pdfThumbnailViewer?.cleanup();
 
-    this.pdfDocument.cleanup(
-      /* keepLoadedFonts = */ AppOptions.get("fontExtraProperties")
-    );
+    // Keep fonts loaded if text layer is enabled and embedded fonts exist,
+    // since the text layer positioning depends on the actual font metrics.
+    const textLayerActive =
+      AppOptions.get("textLayerMode") !== TextLayerMode.DISABLE;
+    const keepLoadedFonts =
+      AppOptions.get("fontExtraProperties") ||
+      (textLayerActive && this.pdfDocument.hasLoadedFonts);
+
+    this.pdfDocument.cleanup(keepLoadedFonts);
   },
 
   forceRendering() {

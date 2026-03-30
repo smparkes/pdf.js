@@ -1082,6 +1082,13 @@ class PDFDocumentProxy {
   }
 
   /**
+   * @type {boolean} Whether the document has embedded fonts loaded in the DOM.
+   */
+  get hasLoadedFonts() {
+    return this._transport.fontLoader.nativeFontFaces.size > 0;
+  }
+
+  /**
    * @returns {Promise<Object<string, Array<Object>> | null>} A promise that is
    *   resolved with an {Object} containing /AcroForm field data for the JS
    *   sandbox, or `null` when no field data is present in the PDF file.
