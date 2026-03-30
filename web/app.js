@@ -1508,6 +1508,7 @@ const PDFViewerApplication = {
         sidebarView: SidebarView.UNKNOWN,
         scrollMode: ScrollMode.UNKNOWN,
         spreadMode: SpreadMode.UNKNOWN,
+        pageStartOffset: null,
       })
       .catch(() => {
         /* Unable to read from storage; ignoring errors. */
@@ -1866,9 +1867,24 @@ const PDFViewerApplication = {
       }
     }
 
-    if (detectedOffset && toolbar) {
-      toolbar.setPageStartOffset(detectedOffset);
-      this.appConfig.toolbar.pageStartOffset.value = detectedOffset;
+    // Check for a stored offset override, falling back to auto-detected.
+    const storedOffset = await this.store
+      ?.get("pageStartOffset", null)
+      .catch(() => null);
+    const offset =
+      storedOffset != null ? parseInt(storedOffset, 10) : detectedOffset;
+
+    if (offset && toolbar) {
+      toolbar.setPageStartOffset(offset);
+      this.appConfig.toolbar.pageStartOffset.value = offset;
+      if (offset !== detectedOffset) {
+        // Stored offset differs from auto-detected; regenerate labels.
+        this.eventBus.dispatch("pagestartoffsetchanged", {
+          source: this,
+          value: offset,
+        });
+        return;
+      }
     }
 
     // Changing toolbar page display to use labels and we need to set
@@ -2774,6 +2790,9 @@ function onPageStartOffsetChanged(evt) {
   const { pdfViewer, pdfThumbnailViewer, toolbar } = this;
   const offset = evt.value;
   const numPages = pdfViewer.pagesCount;
+
+  // Persist the offset.
+  this.store?.set("pageStartOffset", offset).catch(() => {});
 
   if (!offset || offset < 2 || offset > numPages) {
     // Clear labels — revert to standard numbering.
