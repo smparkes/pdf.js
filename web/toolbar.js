@@ -171,6 +171,11 @@ class Toolbar {
     this.#updateUIState(false);
   }
 
+  setPageStartOffset(offset) {
+    this.pageStartOffset = offset || null;
+    this.#updateUIState(false);
+  }
+
   setPagesCount(pagesCount, hasPageLabels) {
     this.pagesCount = pagesCount;
     this.hasPageLabels = hasPageLabels;
@@ -188,6 +193,7 @@ class Toolbar {
     this.pageNumber = 0;
     this.pageLabel = null;
     this.hasPageLabels = false;
+    this.pageStartOffset = null;
     this.pagesCount = 0;
     this.pageScaleValue = DEFAULT_SCALE_VALUE;
     this.pageScale = DEFAULT_SCALE;
@@ -237,6 +243,17 @@ class Toolbar {
         value: this.value,
       });
     });
+
+    const pageStartOffset = this.#opts.pageStartOffset;
+    if (pageStartOffset) {
+      pageStartOffset.addEventListener("change", function () {
+        const offset = parseInt(this.value, 10);
+        eventBus.dispatch("pagestartoffsetchanged", {
+          source: self,
+          value: offset > 0 ? offset : null,
+        });
+      });
+    }
     eventBus._on("pagesedited", ({ pagesMapper }) => {
       const pagesCount = pagesMapper.pagesNumber;
       if (pagesCount !== this.pagesCount) {
@@ -369,15 +386,37 @@ class Toolbar {
         );
       }
       opts.pageNumber.max = pagesCount;
+      const numDigits = pagesCount.toString().length;
+      const inputWidth = `${numDigits + 2}ch`;
+      opts.pageNumber.style.width = inputWidth;
+      if (opts.pageStartOffset) {
+        opts.pageStartOffset.style.width = inputWidth;
+      }
     }
 
     if (this.hasPageLabels) {
       opts.pageNumber.value = this.pageLabel;
 
-      opts.numPages.setAttribute(
-        "data-l10n-args",
-        JSON.stringify({ pageNumber, pagesCount })
-      );
+      if (this.pageStartOffset) {
+        const offset = this.pageStartOffset;
+        const isFrontMatter = pageNumber < offset;
+        const bodyPages = pagesCount - offset + 1;
+        if (isFrontMatter) {
+          opts.numPages.removeAttribute("data-l10n-id");
+          opts.numPages.textContent =
+            `(${this.pageLabel} of front matter / ${pageNumber} of ${pagesCount} total)`;
+        } else {
+          const bodyPage = pageNumber - offset + 1;
+          opts.numPages.removeAttribute("data-l10n-id");
+          opts.numPages.textContent =
+            `(page ${bodyPage} of ${bodyPages} / ${pageNumber} of ${pagesCount} total)`;
+        }
+      } else {
+        opts.numPages.setAttribute(
+          "data-l10n-args",
+          JSON.stringify({ pageNumber, pagesCount })
+        );
+      }
     } else {
       opts.pageNumber.value = pageNumber;
     }

@@ -265,8 +265,7 @@ class ViewsManager extends Sidebar {
         return;
     }
 
-    this.viewsManagerStatus.hidden =
-      !this._enableSplitMerge || view !== SidebarView.THUMBS;
+    this.viewsManagerStatus.hidden = true;
     this.viewsManagerAddFileButton.hidden =
       !this._enableMerge || view !== SidebarView.THUMBS;
     this.viewsManagerCurrentOutlineButton.hidden = view !== SidebarView.OUTLINE;
