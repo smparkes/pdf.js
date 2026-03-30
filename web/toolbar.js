@@ -402,9 +402,10 @@ class Toolbar {
         const isFrontMatter = pageNumber < offset;
         const bodyPages = pagesCount - offset + 1;
         if (isFrontMatter) {
+          const fmTotal = Toolbar.toRomanNumeral(offset - 1);
           opts.numPages.removeAttribute("data-l10n-id");
           opts.numPages.textContent =
-            `(${this.pageLabel} of front matter / ${pageNumber} of ${pagesCount} total)`;
+            `(page ${this.pageLabel} of ${fmTotal} / ${pageNumber} of ${pagesCount} total)`;
         } else {
           const bodyPage = pageNumber - offset + 1;
           opts.numPages.removeAttribute("data-l10n-id");
@@ -450,6 +451,21 @@ class Toolbar {
   updateLoadingIndicatorState(loading = false) {
     const { pageNumber } = this.#opts;
     pageNumber.classList.toggle("loading", loading);
+  }
+
+  static toRomanNumeral(num) {
+    const vals = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+    const syms = [
+      "m", "cm", "d", "cd", "c", "xc", "l", "xl", "x", "ix", "v", "iv", "i",
+    ];
+    let result = "";
+    for (let i = 0; i < vals.length; i++) {
+      while (num >= vals[i]) {
+        result += syms[i];
+        num -= vals[i];
+      }
+    }
+    return result;
   }
 }
 
