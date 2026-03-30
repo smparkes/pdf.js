@@ -224,7 +224,7 @@ const defaultOptions = {
   },
   enableComment: {
     /** @type {boolean} */
-    value: typeof PDFJSDev === "undefined",
+    value: false,
     kind: OptionKind.VIEWER + OptionKind.PREFERENCE,
   },
   enableDetailCanvas: {
@@ -277,12 +277,12 @@ const defaultOptions = {
   },
   enableSignatureEditor: {
     /** @type {boolean} */
-    value: typeof PDFJSDev === "undefined" || PDFJSDev.test("TESTING"),
+    value: false,
     kind: OptionKind.VIEWER + OptionKind.PREFERENCE,
   },
   enableSplitMerge: {
     /** @type {boolean} */
-    value: typeof PDFJSDev === "undefined" || PDFJSDev.test("TESTING"),
+    value: false,
     kind: OptionKind.VIEWER + OptionKind.PREFERENCE,
   },
   enableUpdatedAddImage: {
@@ -569,9 +569,7 @@ if (typeof PDFJSDev === "undefined" || !PDFJSDev.test("MOZCENTRAL")) {
   defaultOptions.defaultUrl = {
     /** @type {string} */
     value:
-      typeof PDFJSDev !== "undefined" && PDFJSDev.test("CHROME")
-        ? ""
-        : "compressed.tracemonkey-pldi-09.pdf",
+      "",
     kind: OptionKind.VIEWER,
   };
   defaultOptions.sandboxBundleSrc = {

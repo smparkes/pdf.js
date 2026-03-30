@@ -801,16 +801,20 @@ const PDFViewerApplication = {
 
     const { appConfig, eventBus } = this;
     let file;
+    let hasExplicitFile = false;
     if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
       const queryString = document.location.search.substring(1);
       const params = parseQueryString(queryString);
+      hasExplicitFile = params.has("file");
       file = params.get("file") ?? AppOptions.get("defaultUrl");
       try {
         file = new URL(file).href;
       } catch {
         file = encodeURIComponent(file).replaceAll("%2F", "/");
       }
-      validateFileURL(file);
+      if (file) {
+        validateFileURL(file);
+      }
     } else if (PDFJSDev.test("MOZCENTRAL")) {
       file = window.location.href;
     } else if (PDFJSDev.test("CHROME")) {
@@ -892,10 +896,23 @@ const PDFViewerApplication = {
     }
 
     if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
-      if (file) {
+      if (hasExplicitFile && file) {
         this.open({ url: file });
       } else {
         this._hideViewBookmark();
+        // Show an "Open PDF" overlay since the file picker requires user activation.
+        const overlay = document.createElement("div");
+        overlay.id = "openFileOverlay";
+        overlay.innerHTML =
+          '<button id="openFileOverlayButton" type="button">Open a PDF file</button>';
+        document.getElementById("viewerContainer").append(overlay);
+        document.getElementById("openFileOverlayButton").addEventListener(
+          "click",
+          () => {
+            overlay.remove();
+            this._openFileInput?.click();
+          }
+        );
       }
     } else if (PDFJSDev.test("MOZCENTRAL || CHROME")) {
       this.setTitleUsingUrl(file, /* downloadUrl = */ file);
@@ -1500,6 +1517,7 @@ const PDFViewerApplication = {
         sidebarView: SidebarView.UNKNOWN,
         scrollMode: ScrollMode.UNKNOWN,
         spreadMode: SpreadMode.UNKNOWN,
+        pageStartOffset: null,
       })
       .catch(() => {
         /* Unable to read from storage; ignoring errors. */
@@ -1824,6 +1842,20 @@ const PDFViewerApplication = {
       return; // The document was closed while the page labels resolved.
     }
     if (!labels || AppOptions.get("disablePageLabels")) {
+      // No PDF page labels, but check for a stored manual offset.
+      const storedOffset = await this.store
+        ?.get("pageStartOffset", null)
+        .catch(() => null);
+      if (storedOffset != null) {
+        const offset = parseInt(storedOffset, 10);
+        if (offset >= 2) {
+          this.appConfig.toolbar.pageStartOffset.value = offset;
+          this.eventBus.dispatch("pagestartoffsetchanged", {
+            source: this,
+            value: offset,
+          });
+        }
+      }
       return;
     }
     const numLabels = labels.length;
@@ -1842,12 +1874,55 @@ const PDFViewerApplication = {
       }
     }
     if (standardLabels >= numLabels || emptyLabels >= numLabels) {
+      // Standard/empty labels, but check for a stored manual offset.
+      const storedOffset = await this.store
+        ?.get("pageStartOffset", null)
+        .catch(() => null);
+      if (storedOffset != null) {
+        const offset = parseInt(storedOffset, 10);
+        if (offset >= 2) {
+          this.appConfig.toolbar.pageStartOffset.value = offset;
+          this.eventBus.dispatch("pagestartoffsetchanged", {
+            source: this,
+            value: offset,
+          });
+        }
+      }
       return;
     }
     const { pdfViewer, pdfThumbnailViewer, toolbar } = this;
 
     pdfViewer.setPageLabels(labels);
     pdfThumbnailViewer?.setPageLabels(labels);
+
+    // Try to detect where page "1" starts to infer the offset.
+    let detectedOffset = null;
+    for (let i = 1; i < numLabels; i++) {
+      if (labels[i] === "1") {
+        detectedOffset = i + 1; // Convert 0-based index to 1-based page.
+        break;
+      }
+    }
+
+    // Check for a stored offset override, falling back to auto-detected.
+    const storedOffset = await this.store
+      ?.get("pageStartOffset", null)
+      .catch(() => null);
+    const offset =
+      storedOffset != null ? parseInt(storedOffset, 10) : detectedOffset;
+
+    if (offset && toolbar) {
+      toolbar.setPageStartOffset(offset);
+      this.appConfig.toolbar.pageStartOffset.value = offset;
+      if (offset !== detectedOffset) {
+        // Stored offset differs from auto-detected; regenerate labels.
+        this.eventBus.dispatch("pagestartoffsetchanged", {
+          source: this,
+          value: offset,
+        });
+        return;
+      }
+    }
 
     // Changing toolbar page display to use labels and we need to set
     // the label of the current page.
@@ -2141,6 +2216,11 @@ const PDFViewerApplication = {
     eventBus._on("zoomout", this.zoomOut.bind(this), opts);
     eventBus._on("zoomreset", this.zoomReset.bind(this), opts);
     eventBus._on("pagenumberchanged", onPageNumberChanged.bind(this), opts);
+    eventBus._on(
+      "pagestartoffsetchanged",
+      onPageStartOffsetChanged.bind(this),
+      opts
+    );
     eventBus._on(
       "scalechanged",
       evt => (pdfViewer.currentScaleValue = evt.value),
@@ -2704,6 +2784,59 @@ function onPageNumberChanged(evt) {
       pdfViewer.currentPageLabel
     );
   }
+}
+
+function toRomanNumeral(num) {
+  const vals = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+  const syms = [
+    "m", "cm", "d", "cd", "c", "xc", "l", "xl", "x", "ix", "v", "iv", "i",
+  ];
+  let result = "";
+  for (let i = 0; i < vals.length; i++) {
+    while (num >= vals[i]) {
+      result += syms[i];
+      num -= vals[i];
+    }
+  }
+  return result;
+}
+
+function onPageStartOffsetChanged(evt) {
+  const { pdfViewer, pdfThumbnailViewer, toolbar } = this;
+  const offset = evt.value;
+  const numPages = pdfViewer.pagesCount;
+
+  // Persist the offset.
+  this.store?.set("pageStartOffset", offset).catch(() => {});
+
+  if (!offset || offset < 2 || offset > numPages) {
+    // Clear labels — revert to standard numbering.
+    pdfViewer.setPageLabels(null);
+    pdfThumbnailViewer?.setPageLabels(null);
+    toolbar?.setPageStartOffset(null);
+    toolbar?.setPagesCount(numPages, false);
+    toolbar?.setPageNumber(pdfViewer.currentPageNumber, null);
+    return;
+  }
+
+  // Generate labels: roman numerals for front matter, arabic for body.
+  const labels = [];
+  for (let i = 0; i < numPages; i++) {
+    if (i < offset - 1) {
+      labels.push(toRomanNumeral(i + 1));
+    } else {
+      labels.push((i - offset + 2).toString());
+    }
+  }
+
+  pdfViewer.setPageLabels(labels);
+  pdfThumbnailViewer?.setPageLabels(labels);
+  toolbar?.setPageStartOffset(offset);
+  toolbar?.setPagesCount(numPages, true);
+  toolbar?.setPageNumber(
+    pdfViewer.currentPageNumber,
+    pdfViewer.currentPageLabel
+  );
 }
 
 function onImageAltTextSettings() {

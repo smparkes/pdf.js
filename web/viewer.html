@@ -174,7 +174,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                         <span data-l10n-id="pdfjs-current-outline-item-button-label"></span>
                       </button>
                     </div>
-                    <div id="viewsManagerStatus">
+                    <div id="viewsManagerStatus" hidden="true">
                       <div id="viewsManagerStatusAction">
                         <span id="viewsManagerStatusActionLabelContainer" class="viewsManagerStatusLabel">
                           <button
@@ -361,6 +361,21 @@ See https://github.com/adobe-type-tools/cmap-resources
                   </span>
                   <span id="numPages" class="toolbarLabel"></span>
                 </div>
+                <div class="toolbarHorizontalGroup">
+                  <span class="toolbarLabel">Page 1 starts at:</span>
+                  <input
+                    type="number"
+                    id="pageStartOffset"
+                    class="toolbarField"
+                    value=""
+                    min="1"
+                    tabindex="0"
+                    title="Physical page where page 1 starts"
+                    placeholder="#"
+                    autocomplete="off"
+                    style="width: 3.5em;"
+                  />
+                </div>
               </div>
               <div id="toolbarViewerMiddle" class="toolbarHorizontalGroup">
                 <div class="toolbarHorizontalGroup">
@@ -459,7 +474,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                       </div>
                     </div>
                   </div>
-                  <div id="editorHighlight" class="toolbarButtonWithContainer">
+                  <!-- Highlight tool disabled -->
+                  <div id="editorHighlight" class="toolbarButtonWithContainer" hidden="true">
                     <button
                       id="editorHighlightButton"
                       class="toolbarButton"
@@ -515,7 +531,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                       </div>
                     </div>
                   </div>
-                  <div id="editorFreeText" class="toolbarButtonWithContainer">
+                  <!-- Text tool disabled -->
+                  <div id="editorFreeText" class="toolbarButtonWithContainer" hidden="true">
                     <button
                       id="editorFreeTextButton"
                       class="toolbarButton"
@@ -542,7 +559,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                       </div>
                     </div>
                   </div>
-                  <div id="editorInk" class="toolbarButtonWithContainer">
+                  <!-- Draw tool disabled -->
+                  <div id="editorInk" class="toolbarButtonWithContainer" hidden="true">
                     <button
                       id="editorInkButton"
                       class="toolbarButton"
@@ -573,7 +591,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                       </div>
                     </div>
                   </div>
-                  <div id="editorStamp" class="toolbarButtonWithContainer">
+                  <!-- Image tool disabled -->
+                  <div id="editorStamp" class="toolbarButtonWithContainer" hidden="true">
                     <button
                       id="editorStampButton"
                       class="toolbarButton"
@@ -603,9 +622,10 @@ See https://github.com/adobe-type-tools/cmap-resources
                   </div>
                 </div>
 
-                <div id="editorModeSeparator" class="verticalToolbarSeparator"></div>
+                <div id="editorModeSeparator" class="verticalToolbarSeparator" hidden="true"></div>
 
-                <div class="toolbarHorizontalGroup hiddenMediumView">
+                <!-- Print and save disabled -->
+                <div class="toolbarHorizontalGroup hiddenMediumView" hidden="true">
                   <button id="printButton" class="toolbarButton" type="button" tabindex="0" data-l10n-id="pdfjs-print-button">
                     <span data-l10n-id="pdfjs-print-button-label"></span>
                   </button>
@@ -615,7 +635,14 @@ See https://github.com/adobe-type-tools/cmap-resources
                   </button>
                 </div>
 
-                <div class="verticalToolbarSeparator hiddenMediumView"></div>
+                <!-- Open file moved to main toolbar -->
+                <!--#if GENERIC-->
+                <button id="secondaryOpenFile" class="toolbarButton" type="button" tabindex="0" data-l10n-id="pdfjs-open-file-button">
+                  <span data-l10n-id="pdfjs-open-file-button-label"></span>
+                </button>
+                <!--#endif-->
+
+                <div class="verticalToolbarSeparator"></div>
 
                 <div id="secondaryToolbarToggle" class="toolbarButtonWithContainer">
                   <button
@@ -632,11 +659,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                   </button>
                   <div id="secondaryToolbar" class="hidden doorHangerRight menu">
                     <div id="secondaryToolbarButtonContainer" class="menuContainer">
-                      <!--#if GENERIC-->
-                      <button id="secondaryOpenFile" class="toolbarButton labeled" type="button" tabindex="0" data-l10n-id="pdfjs-open-file-button">
-                        <span data-l10n-id="pdfjs-open-file-button-label"></span>
-                      </button>
-                      <!--#endif-->
+                      <!-- Open file moved to main toolbar -->
 
                       <div class="visibleMediumView">
                         <button id="secondaryPrint" class="toolbarButton labeled" type="button" tabindex="0" data-l10n-id="pdfjs-print-button">

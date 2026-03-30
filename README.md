@@ -26,9 +26,9 @@ Feel free to stop by our [Matrix room](https://chat.mozilla.org/#/room/#pdfjs:mo
 Please note that the "Modern browsers" version assumes native support for the
 latest JavaScript features; please also see [this wiki page](https://github.com/mozilla/pdf.js/wiki/Frequently-Asked-Questions#faq-support).
 
-+ Modern browsers: https://mozilla.github.io/pdf.js/web/viewer.html
++ Modern browsers: https://smparkes.github.io/pdf.js/web/viewer.html
 
-+ Older browsers: https://mozilla.github.io/pdf.js/legacy/web/viewer.html
++ Older browsers: https://smparkes.github.io/pdf.js/legacy/web/viewer.html
 
 ### Browser Extensions
 
@@ -46,7 +46,7 @@ directory `build/chromium`.
 
 ### PDF debugger
 
-Browser the internal structure of a PDF document with https://mozilla.github.io/pdf.js/internal-viewer/web/debugger.html
+Browser the internal structure of a PDF document with https://smparkes.github.io/pdf.js/internal-viewer/web/debugger.html
 
 ## Getting the Code
 

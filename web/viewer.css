@@ -85,7 +85,7 @@
   --toolbarButton-editorSignature-icon: url(images/toolbarButton-editorSignature.svg);
   --toolbarButton-menuArrow-icon: url(images/toolbarButton-menuArrow.svg);
   --toolbarButton-viewsManagerToggle-icon: url(images/toolbarButton-viewsManagerToggle.svg);
-  --toolbarButton-secondaryToolbarToggle-icon: url(images/toolbarButton-secondaryToolbarToggle.svg);
+  --toolbarButton-secondaryToolbarToggle-icon: url(images/toolbarButton-gear.svg);
   --toolbarButton-pageUp-icon: url(images/toolbarButton-pageUp.svg);
   --toolbarButton-pageDown-icon: url(images/toolbarButton-pageDown.svg);
   --toolbarButton-zoomOut-icon: url(images/toolbarButton-zoomOut.svg);
@@ -280,6 +280,23 @@ body {
   inset: var(--toolbar-height) 0 0;
   outline: none;
   z-index: 0;
+}
+
+#openFileOverlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+#openFileOverlayButton {
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  border: 1px solid var(--toolbar-border-color);
+  border-radius: 4px;
+  background: var(--toolbar-bg-color);
+  color: var(--toolbar-icon-bg-color);
 }
 
 #viewerContainer:not(.pdfPresentationMode) {
@@ -489,6 +506,11 @@ body {
   mask-image: var(--toolbarButton-download-icon);
 }
 
+#secondaryOpenFile::before {
+  mask-image: var(--toolbarButton-openFile-icon);
+}
+
+
 #currentOutlineItem::before {
   mask-image: var(--toolbarButton-currentOutlineItem-icon);
   transform: scaleX(var(--dir-factor));
@@ -574,7 +596,6 @@ body {
 #pageNumber {
   -moz-appearance: textfield; /* hides the spinner in moz */
   text-align: end;
-  width: 40px;
   background-size: 0 0;
   transition-property: none;
 

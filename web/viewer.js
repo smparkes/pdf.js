@@ -39,6 +39,7 @@ function getViewerConfiguration() {
       container: document.getElementById("toolbarContainer"),
       numPages: document.getElementById("numPages"),
       pageNumber: document.getElementById("pageNumber"),
+      pageStartOffset: document.getElementById("pageStartOffset"),
       scaleSelect: document.getElementById("scaleSelect"),
       customScaleOption: document.getElementById("customScaleOption"),
       previous: document.getElementById("previous"),
