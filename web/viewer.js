@@ -72,7 +72,6 @@ function getViewerConfiguration() {
         "editorSignatureParamsToolbar"
       ),
       download: document.getElementById("downloadButton"),
-      openFile: document.getElementById("openFileButton"),
     },
     secondaryToolbar: {
       toolbar: document.getElementById("secondaryToolbar"),

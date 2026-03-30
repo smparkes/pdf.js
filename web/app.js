@@ -812,7 +812,9 @@ const PDFViewerApplication = {
       } catch {
         file = encodeURIComponent(file).replaceAll("%2F", "/");
       }
-      validateFileURL(file);
+      if (file) {
+        validateFileURL(file);
+      }
     } else if (PDFJSDev.test("MOZCENTRAL")) {
       file = window.location.href;
     } else if (PDFJSDev.test("CHROME")) {

@@ -620,10 +620,12 @@ See https://github.com/adobe-type-tools/cmap-resources
                   </button>
                 </div>
 
-                <!-- Open file in main toolbar -->
-                <button id="openFileButton" class="toolbarButton" type="button" tabindex="0" data-l10n-id="pdfjs-open-file-button">
+                <!-- Open file moved to main toolbar -->
+                <!--#if GENERIC-->
+                <button id="secondaryOpenFile" class="toolbarButton" type="button" tabindex="0" data-l10n-id="pdfjs-open-file-button">
                   <span data-l10n-id="pdfjs-open-file-button-label"></span>
                 </button>
+                <!--#endif-->
 
                 <div class="verticalToolbarSeparator"></div>
 
@@ -642,11 +644,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                   </button>
                   <div id="secondaryToolbar" class="hidden doorHangerRight menu">
                     <div id="secondaryToolbarButtonContainer" class="menuContainer">
-                      <!--#if GENERIC-->
-                      <button id="secondaryOpenFile" class="toolbarButton labeled" type="button" tabindex="0" data-l10n-id="pdfjs-open-file-button">
-                        <span data-l10n-id="pdfjs-open-file-button-label"></span>
-                      </button>
-                      <!--#endif-->
+                      <!-- Open file moved to main toolbar -->
 
                       <div class="visibleMediumView">
                         <button id="secondaryPrint" class="toolbarButton labeled" type="button" tabindex="0" data-l10n-id="pdfjs-print-button">

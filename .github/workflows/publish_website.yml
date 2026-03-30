@@ -31,8 +31,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build the website
-        run: npx gulp web
+      - name: Build generic and legacy viewers
+        run: npx gulp generic generic-legacy
+
+      - name: Prepare gh-pages directory
+        run: |
+          mkdir -p build/gh-pages
+          cp -r build/generic/* build/gh-pages/
+          cp -r build/generic-legacy/* build/gh-pages/legacy/
 
       - name: Archive the website
         shell: sh

@@ -85,7 +85,7 @@
   --toolbarButton-editorSignature-icon: url(images/toolbarButton-editorSignature.svg);
   --toolbarButton-menuArrow-icon: url(images/toolbarButton-menuArrow.svg);
   --toolbarButton-viewsManagerToggle-icon: url(images/toolbarButton-viewsManagerToggle.svg);
-  --toolbarButton-secondaryToolbarToggle-icon: url(images/toolbarButton-secondaryToolbarToggle.svg);
+  --toolbarButton-secondaryToolbarToggle-icon: url(images/toolbarButton-gear.svg);
   --toolbarButton-pageUp-icon: url(images/toolbarButton-pageUp.svg);
   --toolbarButton-pageDown-icon: url(images/toolbarButton-pageDown.svg);
   --toolbarButton-zoomOut-icon: url(images/toolbarButton-zoomOut.svg);
@@ -506,9 +506,10 @@ body {
   mask-image: var(--toolbarButton-download-icon);
 }
 
-#openFileButton::before {
+#secondaryOpenFile::before {
   mask-image: var(--toolbarButton-openFile-icon);
 }
+
 
 #currentOutlineItem::before {
   mask-image: var(--toolbarButton-currentOutlineItem-icon);
