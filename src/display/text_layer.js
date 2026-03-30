@@ -338,9 +338,16 @@ class TextLayer {
       angle += Math.PI / 2;
     }
 
+    // Use the actual loaded font name for accurate positioning.
+    // Fall back to fontFamily (generic) if fontName not available.
     let fontFamily =
       (this.#fontInspectorEnabled && style.fontSubstitution) ||
+      style.fontName ||
       style.fontFamily;
+
+    // Get fallback font for CSS fallback chain.
+    const fallbackFamily =
+      TextLayer.fontFamilyMap.get(style.fontFamily) || style.fontFamily;
 
     // Workaround for bug 1922063.
     fontFamily = TextLayer.fontFamilyMap.get(fontFamily) || fontFamily;
@@ -363,7 +370,11 @@ class TextLayer {
     divStyle.left = `${((100 * left) / this.#pageWidth).toFixed(2)}%`;
     divStyle.top = `${((100 * top) / this.#pageHeight).toFixed(2)}%`;
     divStyle.setProperty("--font-height", `${fontHeight.toFixed(2)}px`);
-    divStyle.fontFamily = fontFamily;
+    // Include fallback font in case the actual font isn't loaded.
+    divStyle.fontFamily =
+      fontFamily !== fallbackFamily
+        ? `"${fontFamily}",${fallbackFamily}`
+        : fontFamily;
 
     textDivProperties.fontSize = fontHeight;
 
