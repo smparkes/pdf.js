@@ -460,7 +460,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                       </div>
                     </div>
                   </div>
-                  <div id="editorHighlight" class="toolbarButtonWithContainer">
+                  <!-- Highlight tool disabled -->
+                  <div id="editorHighlight" class="toolbarButtonWithContainer" hidden="true">
                     <button
                       id="editorHighlightButton"
                       class="toolbarButton"
@@ -516,7 +517,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                       </div>
                     </div>
                   </div>
-                  <div id="editorFreeText" class="toolbarButtonWithContainer">
+                  <!-- Text tool disabled -->
+                  <div id="editorFreeText" class="toolbarButtonWithContainer" hidden="true">
                     <button
                       id="editorFreeTextButton"
                       class="toolbarButton"
@@ -543,7 +545,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                       </div>
                     </div>
                   </div>
-                  <div id="editorInk" class="toolbarButtonWithContainer">
+                  <!-- Draw tool disabled -->
+                  <div id="editorInk" class="toolbarButtonWithContainer" hidden="true">
                     <button
                       id="editorInkButton"
                       class="toolbarButton"
@@ -574,7 +577,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                       </div>
                     </div>
                   </div>
-                  <div id="editorStamp" class="toolbarButtonWithContainer">
+                  <!-- Image tool disabled -->
+                  <div id="editorStamp" class="toolbarButtonWithContainer" hidden="true">
                     <button
                       id="editorStampButton"
                       class="toolbarButton"
@@ -604,9 +608,10 @@ See https://github.com/adobe-type-tools/cmap-resources
                   </div>
                 </div>
 
-                <div id="editorModeSeparator" class="verticalToolbarSeparator"></div>
+                <div id="editorModeSeparator" class="verticalToolbarSeparator" hidden="true"></div>
 
-                <div class="toolbarHorizontalGroup hiddenMediumView">
+                <!-- Print and save disabled -->
+                <div class="toolbarHorizontalGroup hiddenMediumView" hidden="true">
                   <button id="printButton" class="toolbarButton" type="button" tabindex="0" data-l10n-id="pdfjs-print-button">
                     <span data-l10n-id="pdfjs-print-button-label"></span>
                   </button>
@@ -616,7 +621,12 @@ See https://github.com/adobe-type-tools/cmap-resources
                   </button>
                 </div>
 
-                <div class="verticalToolbarSeparator hiddenMediumView"></div>
+                <!-- Open file in main toolbar -->
+                <button id="openFileButton" class="toolbarButton" type="button" tabindex="0" data-l10n-id="pdfjs-open-file-button">
+                  <span data-l10n-id="pdfjs-open-file-button-label"></span>
+                </button>
+
+                <div class="verticalToolbarSeparator"></div>
 
                 <div id="secondaryToolbarToggle" class="toolbarButtonWithContainer">
                   <button

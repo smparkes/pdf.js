@@ -67,6 +67,7 @@ class Toolbar {
       { element: options.zoomOut, eventName: "zoomout" },
       { element: options.print, eventName: "print" },
       { element: options.download, eventName: "download" },
+      { element: options.openFile, eventName: "openfile" },
       {
         element: options.editorCommentButton,
         eventName: "switchannotationeditormode",
