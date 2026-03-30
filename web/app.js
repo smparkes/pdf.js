@@ -1833,6 +1833,20 @@ const PDFViewerApplication = {
       return; // The document was closed while the page labels resolved.
     }
     if (!labels || AppOptions.get("disablePageLabels")) {
+      // No PDF page labels, but check for a stored manual offset.
+      const storedOffset = await this.store
+        ?.get("pageStartOffset", null)
+        .catch(() => null);
+      if (storedOffset != null) {
+        const offset = parseInt(storedOffset, 10);
+        if (offset >= 2) {
+          this.appConfig.toolbar.pageStartOffset.value = offset;
+          this.eventBus.dispatch("pagestartoffsetchanged", {
+            source: this,
+            value: offset,
+          });
+        }
+      }
       return;
     }
     const numLabels = labels.length;
@@ -1851,6 +1865,20 @@ const PDFViewerApplication = {
       }
     }
     if (standardLabels >= numLabels || emptyLabels >= numLabels) {
+      // Standard/empty labels, but check for a stored manual offset.
+      const storedOffset = await this.store
+        ?.get("pageStartOffset", null)
+        .catch(() => null);
+      if (storedOffset != null) {
+        const offset = parseInt(storedOffset, 10);
+        if (offset >= 2) {
+          this.appConfig.toolbar.pageStartOffset.value = offset;
+          this.eventBus.dispatch("pagestartoffsetchanged", {
+            source: this,
+            value: offset,
+          });
+        }
+      }
       return;
     }
     const { pdfViewer, pdfThumbnailViewer, toolbar } = this;
