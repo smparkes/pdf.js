@@ -36,7 +36,7 @@ jobs:
 
       - name: Prepare gh-pages directory
         run: |
-          mkdir -p build/gh-pages
+          mkdir -p build/gh-pages/legacy
           cp -r build/generic/* build/gh-pages/
           cp -r build/generic-legacy/* build/gh-pages/legacy/
 
