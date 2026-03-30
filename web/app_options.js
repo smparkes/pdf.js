@@ -224,7 +224,7 @@ const defaultOptions = {
   },
   enableComment: {
     /** @type {boolean} */
-    value: typeof PDFJSDev === "undefined",
+    value: false,
     kind: OptionKind.VIEWER + OptionKind.PREFERENCE,
   },
   enableDetailCanvas: {
@@ -277,7 +277,7 @@ const defaultOptions = {
   },
   enableSignatureEditor: {
     /** @type {boolean} */
-    value: typeof PDFJSDev === "undefined" || PDFJSDev.test("TESTING"),
+    value: false,
     kind: OptionKind.VIEWER + OptionKind.PREFERENCE,
   },
   enableSplitMerge: {

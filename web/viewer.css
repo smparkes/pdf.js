@@ -282,6 +282,23 @@ body {
   z-index: 0;
 }
 
+#openFileOverlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+#openFileOverlayButton {
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  border: 1px solid var(--toolbar-border-color);
+  border-radius: 4px;
+  background: var(--toolbar-bg-color);
+  color: var(--toolbar-icon-bg-color);
+}
+
 #viewerContainer:not(.pdfPresentationMode) {
   transition-duration: var(--sidebar-transition-duration);
   transition-timing-function: var(--sidebar-transition-timing-function);
@@ -487,6 +504,10 @@ body {
 
 #downloadButton::before {
   mask-image: var(--toolbarButton-download-icon);
+}
+
+#openFileButton::before {
+  mask-image: var(--toolbarButton-openFile-icon);
 }
 
 #currentOutlineItem::before {
