@@ -567,6 +567,11 @@ class PDFThumbnailView extends RenderableView {
    */
   setPageLabel(label) {
     this.pageLabel = typeof label === "string" ? label : null;
+    if (this.pageLabel) {
+      this.imageContainer.setAttribute("page-label", this.pageLabel);
+    } else {
+      this.imageContainer.removeAttribute("page-label");
+    }
     this.imageContainer.setAttribute(
       "data-l10n-args",
       this.#getPageL10nArgs(true)

@@ -1849,6 +1849,20 @@ const PDFViewerApplication = {
     pdfViewer.setPageLabels(labels);
     pdfThumbnailViewer?.setPageLabels(labels);
 
+    // Try to detect where page "1" starts to infer the offset.
+    let detectedOffset = null;
+    for (let i = 1; i < numLabels; i++) {
+      if (labels[i] === "1") {
+        detectedOffset = i + 1; // Convert 0-based index to 1-based page.
+        break;
+      }
+    }
+
+    if (detectedOffset && toolbar) {
+      toolbar.setPageStartOffset(detectedOffset);
+      this.appConfig.toolbar.pageStartOffset.value = detectedOffset;
+    }
+
     // Changing toolbar page display to use labels and we need to set
     // the label of the current page.
     toolbar?.setPagesCount(numLabels, true);
@@ -2135,6 +2149,11 @@ const PDFViewerApplication = {
     eventBus._on("zoomout", this.zoomOut.bind(this), opts);
     eventBus._on("zoomreset", this.zoomReset.bind(this), opts);
     eventBus._on("pagenumberchanged", onPageNumberChanged.bind(this), opts);
+    eventBus._on(
+      "pagestartoffsetchanged",
+      onPageStartOffsetChanged.bind(this),
+      opts
+    );
     eventBus._on(
       "scalechanged",
       evt => (pdfViewer.currentScaleValue = evt.value),
@@ -2698,6 +2717,56 @@ function onPageNumberChanged(evt) {
       pdfViewer.currentPageLabel
     );
   }
+}
+
+function toRomanNumeral(num) {
+  const vals = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+  const syms = [
+    "m", "cm", "d", "cd", "c", "xc", "l", "xl", "x", "ix", "v", "iv", "i",
+  ];
+  let result = "";
+  for (let i = 0; i < vals.length; i++) {
+    while (num >= vals[i]) {
+      result += syms[i];
+      num -= vals[i];
+    }
+  }
+  return result;
+}
+
+function onPageStartOffsetChanged(evt) {
+  const { pdfViewer, pdfThumbnailViewer, toolbar } = this;
+  const offset = evt.value;
+  const numPages = pdfViewer.pagesCount;
+
+  if (!offset || offset < 2 || offset > numPages) {
+    // Clear labels — revert to standard numbering.
+    pdfViewer.setPageLabels(null);
+    pdfThumbnailViewer?.setPageLabels(null);
+    toolbar?.setPageStartOffset(null);
+    toolbar?.setPagesCount(numPages, false);
+    toolbar?.setPageNumber(pdfViewer.currentPageNumber, null);
+    return;
+  }
+
+  // Generate labels: roman numerals for front matter, arabic for body.
+  const labels = [];
+  for (let i = 0; i < numPages; i++) {
+    if (i < offset - 1) {
+      labels.push(toRomanNumeral(i + 1));
+    } else {
+      labels.push((i - offset + 2).toString());
+    }
+  }
+
+  pdfViewer.setPageLabels(labels);
+  pdfThumbnailViewer?.setPageLabels(labels);
+  toolbar?.setPageStartOffset(offset);
+  toolbar?.setPagesCount(numPages, true);
+  toolbar?.setPageNumber(
+    pdfViewer.currentPageNumber,
+    pdfViewer.currentPageLabel
+  );
 }
 
 function onImageAltTextSettings() {

@@ -693,6 +693,10 @@
           user-select: none;
         }
 
+        &:not(.isDragging) > .thumbnailImageContainer[page-label]::after {
+          content: attr(page-label);
+        }
+
         &:has([aria-current="page"]):not(.isDragging)
           > .thumbnailImageContainer::after {
           background-color: var(--image-current-page-number-bg);

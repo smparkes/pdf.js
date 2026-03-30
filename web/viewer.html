@@ -174,7 +174,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                         <span data-l10n-id="pdfjs-current-outline-item-button-label"></span>
                       </button>
                     </div>
-                    <div id="viewsManagerStatus">
+                    <div id="viewsManagerStatus" hidden="true">
                       <div id="viewsManagerStatusAction">
                         <span id="viewsManagerStatusActionLabelContainer" class="viewsManagerStatusLabel">
                           <button
@@ -360,6 +360,21 @@ See https://github.com/adobe-type-tools/cmap-resources
                     />
                   </span>
                   <span id="numPages" class="toolbarLabel"></span>
+                </div>
+                <div class="toolbarHorizontalGroup">
+                  <span class="toolbarLabel">Page 1 starts at:</span>
+                  <input
+                    type="number"
+                    id="pageStartOffset"
+                    class="toolbarField"
+                    value=""
+                    min="1"
+                    tabindex="0"
+                    title="Physical page where page 1 starts"
+                    placeholder="#"
+                    autocomplete="off"
+                    style="width: 3.5em;"
+                  />
                 </div>
               </div>
               <div id="toolbarViewerMiddle" class="toolbarHorizontalGroup">
