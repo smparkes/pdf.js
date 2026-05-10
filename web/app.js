@@ -806,16 +806,20 @@ const PDFViewerApplication = {
 
     const { appConfig, eventBus } = this;
     let file;
+    let hasExplicitFile = false;
     if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
       const queryString = document.location.search.substring(1);
       const params = parseQueryString(queryString);
+      hasExplicitFile = params.has("file");
       file = params.get("file") ?? AppOptions.get("defaultUrl");
       try {
         file = new URL(file).href;
       } catch {
         file = encodeURIComponent(file).replaceAll("%2F", "/");
       }
-      validateFileURL(file);
+      if (file) {
+        validateFileURL(file);
+      }
     } else if (PDFJSDev.test("MOZCENTRAL")) {
       file = window.location.href;
     } else if (PDFJSDev.test("CHROME")) {
@@ -897,10 +901,23 @@ const PDFViewerApplication = {
     }
 
     if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
-      if (file) {
+      if (hasExplicitFile && file) {
         this.open({ url: file });
       } else {
         this._hideViewBookmark();
+        // Show an "Open PDF" overlay since the file picker requires user activation.
+        const overlay = document.createElement("div");
+        overlay.id = "openFileOverlay";
+        overlay.innerHTML =
+          '<button id="openFileOverlayButton" type="button">Open a PDF file</button>';
+        document.getElementById("viewerContainer").append(overlay);
+        document.getElementById("openFileOverlayButton").addEventListener(
+          "click",
+          () => {
+            overlay.remove();
+            this._openFileInput?.click();
+          }
+        );
       }
     } else if (PDFJSDev.test("MOZCENTRAL || CHROME")) {
       this.setTitleUsingUrl(file, /* downloadUrl = */ file);
