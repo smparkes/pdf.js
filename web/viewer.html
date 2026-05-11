@@ -624,9 +624,9 @@ See https://github.com/adobe-type-tools/cmap-resources
 
                 <div id="editorModeSeparator" class="verticalToolbarSeparator"></div>
 
-                <!-- Print and save disabled -->
-                <div class="toolbarHorizontalGroup hiddenMediumView" hidden="true">
-                  <button id="printButton" class="toolbarButton" type="button" tabindex="0" data-l10n-id="pdfjs-print-button">
+                <!-- Print disabled in demo; Save exposed so users can download highlights baked into the PDF -->
+                <div class="toolbarHorizontalGroup hiddenMediumView">
+                  <button id="printButton" class="toolbarButton" type="button" tabindex="0" data-l10n-id="pdfjs-print-button" hidden="true">
                     <span data-l10n-id="pdfjs-print-button-label"></span>
                   </button>
 
@@ -662,7 +662,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                       <!-- Open file moved to main toolbar -->
 
                       <div class="visibleMediumView">
-                        <button id="secondaryPrint" class="toolbarButton labeled" type="button" tabindex="0" data-l10n-id="pdfjs-print-button">
+                        <button id="secondaryPrint" class="toolbarButton labeled" type="button" tabindex="0" data-l10n-id="pdfjs-print-button" hidden="true">
                           <span data-l10n-id="pdfjs-print-button-label"></span>
                         </button>
 
