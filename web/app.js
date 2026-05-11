@@ -901,6 +901,10 @@ const PDFViewerApplication = {
     }
 
     if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
+      import("./demo_highlight_storage.js").then(
+        ({ initDemoHighlightStorage }) =>
+          initDemoHighlightStorage({ eventBus: this.eventBus, app: this })
+      );
       if (hasExplicitFile && file) {
         this.open({ url: file });
       } else {
