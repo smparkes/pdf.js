@@ -1,5 +1,6 @@
 let pendingHandle = null;
 let currentHandle = null;
+let savedClean = false;
 
 function pickerAvailable() {
   return typeof window !== "undefined" && "showOpenFilePicker" in window;
@@ -44,7 +45,22 @@ function initDemoSaveToFile({ eventBus, app }) {
   eventBus.on("documentloaded", () => {
     currentHandle = pendingHandle;
     pendingHandle = null;
+    savedClean = false;
   });
+
+  // After a successful FSA write the bytes are on disk, so the upstream
+  // beforeunload guard (which warns whenever annotationStorage.size > 0)
+  // becomes a false positive. Suppress it until the next edit flips the
+  // storage's modified flag back on.
+  const origHasChanges = app._hasChanges?.bind(app);
+  if (origHasChanges) {
+    app._hasChanges = function () {
+      if (savedClean && !app._annotationStorageModified) {
+        return false;
+      }
+      return origHasChanges();
+    };
+  }
 
   // Patch the hidden <input type="file"> click so every open path (overlay
   // button, toolbar Open) prefers the FSA picker. Falls back to the native
@@ -81,6 +97,8 @@ function initDemoSaveToFile({ eventBus, app }) {
         try {
           const ok = await writeToHandle(currentHandle, data);
           if (ok) {
+            savedClean = true;
+            app.pdfDocument?.annotationStorage.resetModified();
             return;
           }
         } catch (ex) {
