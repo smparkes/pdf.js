@@ -905,6 +905,9 @@ const PDFViewerApplication = {
         ({ initDemoHighlightStorage }) =>
           initDemoHighlightStorage({ eventBus: this.eventBus, app: this })
       );
+      import("./demo_save_to_file.js").then(({ initDemoSaveToFile }) =>
+        initDemoSaveToFile({ eventBus: this.eventBus, app: this })
+      );
       if (hasExplicitFile && file) {
         this.open({ url: file });
       } else {
